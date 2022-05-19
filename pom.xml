@@ -27,9 +27,8 @@
 			<version>2.6.7</version>
 		</dependency>
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.29</version>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -96,6 +95,19 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M5</version>
+				<configuration>
+					<testSourceDirectory>src/test/groovy</testSourceDirectory>
+					<testSourceDirectory>src/test/java</testSourceDirectory>
+					<includes>
+						<include>**/*Test.*</include>
+					</includes>
+					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
 		</plugins>

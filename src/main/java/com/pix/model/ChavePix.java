@@ -1,6 +1,5 @@
 package com.pix.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,9 +38,7 @@ public class ChavePix implements Serializable {
 
     private String tipoPessoa;
 
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime dataHoraInclusao;
 
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime dataHoraInativacao;
 }

@@ -1,9 +1,13 @@
 package com.pix.service;
 
+import com.pix.config.exceptions.NotFound;
 import com.pix.config.exceptions.UnprocessableEntity;
 import com.pix.dto.ChavePixRequest;
 import com.pix.dto.ChavePixResponse;
+import com.pix.dto.ChavePixUpdateRequest;
+import com.pix.dto.ChavePixUpdateResponse;
 import com.pix.model.ChavePix;
+import com.pix.model.enums.TipoContaEnum;
 import com.pix.model.enums.TipoPessoaEnum;
 import com.pix.repository.ChavePixRepository;
 import com.pix.utils.Validator;
@@ -11,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 
 @Service
@@ -31,7 +36,8 @@ public class ChavePixService {
             chavePixPersist.setConta(request.getConta());
             chavePixPersist.setDataHoraInclusao(LocalDateTime.now());
             chavePixPersist.setNomeCorrentista(request.getNomeCorrentista());
-            chavePixPersist.setSobrenomeCorrentista(request.getSobrenomeCorrentista());
+            chavePixPersist.setSobrenomeCorrentista(request.getSobrenomeCorrentista() == null ? ""  :
+                    request.getSobrenomeCorrentista());
             chavePixPersist.setTipoConta(request.getTipoConta().toString());
             chavePixPersist.setTipoPessoa(request.getTipoPessoa().toString());
 
@@ -42,7 +48,59 @@ public class ChavePixService {
 
             return chavePixResponse;
         }
-        else throw new UnprocessableEntity("faf","any msg");
+        else throw new UnprocessableEntity("erro.gerenerico");
+    }
+
+    public ChavePixUpdateResponse updateById(ChavePixUpdateRequest request){
+        Optional<ChavePix> chavePix = chavePixRepository.findById(request.getId());
+        if(chavePix.isPresent() && chavePix.get().getDataHoraInativacao() == null){
+            ChavePix chavePixUpdate = chavePix.get();
+            if (request.getTipoConta() != null)
+            {
+                chavePixUpdate.setTipoConta(request.getTipoConta().toString());
+            }
+            if (request.getAgencia() != null && Validator.isValidAgencia(request.getAgencia()))
+            {
+                chavePixUpdate.setAgencia(request.getAgencia());
+            }
+            if (request.getConta() != null && Validator.isValidConta(request.getConta()))
+            {
+                chavePixUpdate.setConta(request.getConta());
+            }
+            if (request.getTipoPessoa() != null)
+            {
+                chavePixUpdate.setTipoPessoa(request.getTipoPessoa().toString());
+            }
+            if (request.getNomeCorrentista() != null && !request.getNomeCorrentista().isEmpty()
+                    && Validator.isValidNome(request.getNomeCorrentista()))
+            {
+                chavePixUpdate.setNomeCorrentista(request.getNomeCorrentista());
+            }
+            if (request.getSobrenomeCorrentista() != null && !request.getSobrenomeCorrentista().isEmpty()
+                    && Validator.isValidSobrenome(request.getSobrenomeCorrentista()))
+            {
+                chavePixUpdate.setSobrenomeCorrentista(request.getSobrenomeCorrentista());
+            }
+
+            try {
+                chavePixRepository.save(chavePixUpdate);
+            }
+            catch (Exception e){
+                throw new RuntimeException(e);
+            }
+
+            ChavePixUpdateResponse response = new ChavePixUpdateResponse();
+            response.setId(chavePixUpdate.getId());
+            response.setAgencia(chavePixUpdate.getAgencia());
+            response.setConta(chavePixUpdate.getConta());
+            response.setNomeCorrentista(chavePixUpdate.getNomeCorrentista());
+            response.setSobrenomeCorrentista(chavePixUpdate.getSobrenomeCorrentista());
+            response.setTipoConta(TipoContaEnum.valueOf(chavePixUpdate.getTipoConta()));
+            response.setTipoPessoa(TipoPessoaEnum.valueOf(chavePixUpdate.getTipoPessoa()));
+
+            return response;
+        }
+        throw new NotFound("chave.pix.nao.cadastrada", request.getId().toString());
     }
 
     private boolean canRegister(ChavePixRequest request) {
@@ -70,7 +128,7 @@ public class ChavePixService {
             case EMAIL:
                 return Validator.isValidEmail(request.getValorChave(), request.getTipoChave());
             default:
-                throw new UnprocessableEntity("sdasd","any msg");
+                throw new UnprocessableEntity("enum.invalido");
         }
     }
 }

@@ -23,7 +23,7 @@ public class Validator {
             sm = 0;
             peso = 10;
             for (i = 0; i < 9; i++) {
-                num = (int) (CPF.charAt(i) - 48);
+                num = (CPF.charAt(i) - 48);
                 sm = sm + (num * peso);
                 peso = peso - 1;
             }
@@ -36,7 +36,7 @@ public class Validator {
             sm = 0;
             peso = 11;
             for (i = 0; i < 10; i++) {
-                num = (int) (CPF.charAt(i) - 48);
+                num = (CPF.charAt(i) - 48);
                 sm = sm + (num * peso);
                 peso = peso - 1;
             }
@@ -70,7 +70,7 @@ public class Validator {
             sm = 0;
             peso = 2;
             for (i = 11; i >= 0; i--) {
-                num = (int) (CNPJ.charAt(i) - 48);
+                num = (CNPJ.charAt(i) - 48);
                 sm = sm + (num * peso);
                 peso = peso + 1;
                 if (peso == 10)
@@ -86,7 +86,7 @@ public class Validator {
             sm = 0;
             peso = 2;
             for (i = 12; i >= 0; i--) {
-                num = (int) (CNPJ.charAt(i) - 48);
+                num = (CNPJ.charAt(i) - 48);
                 sm = sm + (num * peso);
                 peso = peso + 1;
                 if (peso == 10)
@@ -110,7 +110,7 @@ public class Validator {
 
     public static boolean isValidEmail(String email, TipoChaveEnum tipoChaveEnum) {
         if (email != null && email.length() > 0) {
-            String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+            String expression = "^[\\w-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
             Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(email);
             if (matcher.matches() && email.length() <= 77) {
@@ -146,7 +146,7 @@ public class Validator {
             return true;
         }
 
-        throw new UnprocessableEntity("campo.conta.maximo.caractere", "");
+        throw new UnprocessableEntity("campo.conta.maximo.caractere");
     }
 
     public static boolean isValidAgencia(int agencia){
@@ -156,6 +156,22 @@ public class Validator {
             return true;
         }
 
-        throw new UnprocessableEntity("campo.agencia.maximo.caractere", "");
+        throw new UnprocessableEntity("campo.agencia.maximo.caractere");
+    }
+
+    public static boolean isValidNome(String nome){
+        if(nome.length() <=30){
+            return true;
+        }
+
+        throw new UnprocessableEntity("campo.nome.maximo.caractere");
+    }
+
+    public static boolean isValidSobrenome(String sobrenome){
+        if(sobrenome.length() <=45){
+            return true;
+        }
+
+        throw new UnprocessableEntity("campo.sobrenome.maximo.caractere");
     }
 }

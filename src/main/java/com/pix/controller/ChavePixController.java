@@ -43,8 +43,8 @@ public class ChavePixController {
     public ResponseEntity<List<ChavePix>> findCustom(
             @RequestParam(value = "id", required = false) UUID id,
             @RequestParam(value = "tipoChave", required = false) String tipoChaveEnum,
-            @RequestParam(value = "agencia", required = false) String agencia,
-            @RequestParam(value = "conta", required = false) String conta,
+            @RequestParam(value = "agencia", required = false) Integer agencia,
+            @RequestParam(value = "conta", required = false) Integer conta,
             @RequestParam(value = "nomeCorrentista", required = false) String nomeCorrentista
     ){
         return ResponseEntity.ok(chavePixCustomRepository.find(id, tipoChaveEnum, agencia, conta,

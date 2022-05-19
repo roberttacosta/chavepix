@@ -7,7 +7,6 @@ import com.pix.model.enums.TipoChaveEnum;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,12 +19,13 @@ public class ChavePixCustomRepository {
         this.entityManager = entityManager;
     }
 
-    public List<ChavePix> find(UUID id, String tipoChave, String agencia, String conta, String nomeCorrentista) {
+    public List<ChavePix> find(UUID id, String tipoChave, Integer agencia, Integer conta, String nomeCorrentista) {
 
         if (id != null && tipoChave != null ||
-                id != null && agencia != null ||
                 id != null && conta != null ||
-                id != null && nomeCorrentista != null) {
+                id != null && nomeCorrentista != null ||
+                conta != null && agencia == null ||
+                conta == null && agencia != null) {
             throw new UnprocessableEntity("combinacao.invalida");
         }
 
@@ -46,7 +46,7 @@ public class ChavePixCustomRepository {
             condicao = " and ";
         }
 
-        if (agencia != null && conta != null) {
+        if (agencia != null) {
             query += condicao + "C.agencia = :agencia ";
             query += "and C.conta = :conta";
             condicao = " and ";
@@ -72,7 +72,7 @@ public class ChavePixCustomRepository {
             q.setParameter("tipoChave", tipoChave);
         }
 
-        if (agencia != null && conta != null) {
+        if (agencia != null) {
             q.setParameter("agencia", agencia);
             q.setParameter("conta", conta);
         }
